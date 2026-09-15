@@ -191,7 +191,7 @@ The reported training tolerance applies to supervised data loss, not to the Youn
 This solver uses the pressure term
 
 $$
-P_0+\mathrm{Bo}\,z.
+P_0+\mathrm{Bo}\ z.
 $$
 
 The companion small-Bond-number perturbation PINN uses a pressure term of the form $K-Gz$.
