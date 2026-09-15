@@ -306,3 +306,50 @@ No Young–Laplace PDE residual is included in the objective, and no correction 
 Newton reference solutions are generated before training. The optimization loop runs entirely in PyTorch.
 
 To compare the two methods, use matching training/test Bond numbers, mesh resolution, network architecture, and optimization settings. Report prediction errors together with boundary and volume errors on held-out cases.
+
+## Comparison at an unseen Bond number
+
+The two models are evaluated at **Bo = 0.25**, which is excluded
+from both training datasets. Each prediction is compared with
+the Fortran Newton reference solution.
+
+Both runs use the same training/test Bond numbers, mesh resolution,
+and network architecture.
+
+| Supervised learning | Physics-constrained supervised learning |
+|:---:|:---:|
+| ![Supervised prediction](supervised_Bo_0.25.png) | ![Physics-constrained prediction](constrained_Bo_0.25.png) |
+| Data loss | Data loss + boundary and volume penalties |
+
+The boundary and volume penalties are applied only at training
+Bond numbers. This comparison evaluates how well the learned
+solution and constraints generalize to an unseen Bond number.
+
+## Comparison across unseen Bond numbers
+
+Lower errors are better. S: supervised; C: physics-constrained.
+
+| Bo | Radius error S | Radius error C | Pressure error S | Pressure error C |
+|---:|---:|---:|---:|---:|
+| 0.25 | 6.5200e-05 | 7.0573e-05 | 7.5745e-05 | 1.2542e-04 |
+| 0.55 | 4.0765e-05 | 3.6919e-05 | 1.0374e-04 | 2.8521e-04 |
+| 0.85 | 5.9898e-05 | 4.9406e-05 | 1.4725e-04 | 3.4873e-04 |
+| 1.15 | 3.4457e-05 | 5.1472e-05 | 7.1570e-05 | 1.5761e-05 |
+| 1.45 | 6.1627e-05 | 5.3956e-05 | 2.5649e-04 | 3.0766e-04 |
+| 1.75 | 6.9520e-05 | 5.4565e-05 | 1.1392e-05 | 1.4199e-04 |
+| 2.05 | 7.8103e-05 | 7.8194e-05 | 4.5758e-04 | 3.2458e-04 |
+| 2.35 | 1.3418e-04 | 1.3772e-04 | 9.0787e-05 | 2.4633e-05 |
+| 2.65 | 7.1384e-04 | 6.5847e-04 | 1.4387e-03 | 1.3473e-03 |
+
+Radius errors are relative L2 errors; pressure errors are absolute.
+
+### Summary over test Bond numbers
+
+| Metric | Supervised mean | Constrained mean | Supervised max | Constrained max |
+|---|---:|---:|---:|---:|
+| Relative solution-vector error | 1.1005e-04 | 1.1288e-04 | 5.3319e-04 | 5.3051e-04 |
+| Relative radius error | 1.3973e-04 | 1.3236e-04 | 7.1384e-04 | 6.5847e-04 |
+| Relative axial-coordinate error | 7.7358e-05 | 9.2228e-05 | 3.3670e-04 | 4.0673e-04 |
+| Absolute pressure error | 2.9481e-04 | 3.2459e-04 | 1.4387e-03 | 1.3473e-03 |
+| Maximum absolute boundary error | 2.6617e-04 | 2.8935e-04 | 7.4743e-04 | 1.2880e-03 |
+| Absolute volume error | 1.0500e-03 | 4.4858e-04 | 3.2622e-03 | 1.4434e-03 |
