@@ -31,11 +31,7 @@ $$
 With dimensionless surface tension equal to one, the Young–Laplace equation for a profile representable as $r(z)$ is
 
 $$
-\frac{1}{r\sqrt{1+r_z^2}}
--
-\frac{r_{zz}}{(1+r_z^2)^{3/2}}
-=
-P_0+\mathrm{Bo}\,z.
+\frac{1}{r\sqrt{1+r_z^2}} - \frac{r_{zz}}{(1+r_z^2)^{3/2}} = P_0+\mathrm{Bo}\,z.
 $$
 
 The Fortran implementation uses a parametric representation of the interface and solves for its coordinates and the unknown pressure $P_0$.
