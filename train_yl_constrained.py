@@ -535,7 +535,7 @@ def main():
     parser.add_argument(
         "--tol",
         type=float,
-        default=1e-10,
+        default=1e-6,
         help="Unscaled total loss target; NOT a residual tolerance",
     )
     parser.add_argument("--bond-min", type=float, default=0.1)
