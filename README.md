@@ -70,16 +70,7 @@ $$
 the supervised loss is
 
 $$
-\mathcal{L}
-=
-\frac{1}{N_B}
-\sum_{b=1}^{N_B}
-\frac{1}{2}
-\left\|
-\mathbf{U}_{\theta,b}
--
-\mathbf{U}_{\mathrm{Newton},b}
-\right\|_2^2.
+\mathcal{L} = \frac{1}{N_B} \sum_{b=1}^{N_B} \frac{1}{2} \left\| \mathbf{U}_{\theta,b} - \mathbf{U}_{\mathrm{Newton},b} \right\|_2^2.
 $$
 
 Training uses float64 arithmetic, Adam optimization, and scaled L-BFGS refinement. The best recorded model is retained.
