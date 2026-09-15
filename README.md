@@ -25,7 +25,7 @@ $$
 Its prescribed volume is
 
 $$
-V=\pi\int_0^L r(z)^2\,dz=2\pi.
+V=\pi\int_0^L r(z)^2 \, dz=2\pi.
 $$
 
 With dimensionless surface tension equal to one, the Young–Laplace equation for a profile representable as $r(z)$ is
