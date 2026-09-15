@@ -248,4 +248,4 @@ interpolation to an unseen parameter value.
 
 The predicted profile closely follows the numerical reference.
 Small differences are difficult to distinguish at this plotting
-scale, so quantitative errors are reported separately.
+scale.
