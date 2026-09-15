@@ -1,6 +1,6 @@
 # Young–Laplace Supervised ML
 
-A supervised neural surrogate for axisymmetric liquid-bridge equilibria governed by the Young–Laplace equation.
+A supervised neural surrogate for predicting axisymmetric liquid-bridge equilibrium solution governed by the Young–Laplace equation.
 
 A Fortran finite-element Newton solver generates reference solutions. A PyTorch model learns the bridge geometry and reference pressure across Bond numbers, then evaluates predictions at held-out Bond numbers.
 
@@ -45,7 +45,7 @@ The Fortran implementation uses a parametric representation of the interface and
 The model contains two tanh networks:
 
 - **Geometry network:** computational coordinate $t\in[0,1]$ and Bond number → radial and axial corrections.
-- **Pressure network:** Bond number → one pressure correction shared across the interface.
+- **Pressure network:** Bond number → reference pressure.
 
 The outputs are constructed as
 
