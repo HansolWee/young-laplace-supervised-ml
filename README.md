@@ -234,3 +234,18 @@ The perturbation solution retains terms only through first order in the Bond num
 | `mod_yl_python.f90` | Residual and gradient evaluation |
 | `main_yl_evaluate.f90` | Evaluator command-line program |
 | `Makefile` | Fortran build rules |
+
+### Predicted bridge profile at Bo = 0.25
+
+![Supervised prediction versus Newton reference at Bo = 0.25](supervised_Bo_0.25.png)
+
+The figure compares the supervised neural-network prediction with
+the Fortran Newton reference solution at **Bo = 0.25**.
+
+This Bond number is excluded from training and lies between the
+training values **Bo = 0.1** and **Bo = 0.4**, providing a test of
+interpolation to an unseen parameter value.
+
+The predicted profile closely follows the numerical reference.
+Small differences are difficult to distinguish at this plotting
+scale, so quantitative errors are reported separately.
