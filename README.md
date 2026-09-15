@@ -12,7 +12,8 @@ The workflow consists of three stages:
 2. Train the neural surrogate on selected Bond numbers.
 3. Compare predictions with reference solutions at unseen Bond numbers.
 
-The training objective uses solution data only. No governing-equation residual is included in the neural-network loss, and no Fortran calls are made during optimization.
+The baseline uses solution data only. The constrained variant adds boundary-condition and volume-conservation penalties.
+Neither method includes a governing-equation residual in its loss.
 
 ## Physical problem
 
@@ -219,3 +220,89 @@ The perturbation solution retains terms only through first order in the Bond num
 | `mod_yl_python.f90` | Residual and gradient evaluation |
 | `main_yl_evaluate.f90` | Evaluator command-line program |
 | `Makefile` | Fortran build rules |
+
+## Physics-constrained supervised learning
+
+`train_yl_constrained.py` extends the supervised surrogate with soft penalties for fixed contact-line boundary conditions and volume conservation.
+
+Both training methods share the same neural architecture and Fortran-generated reference data.
+
+| Method | Script | Training objective |
+|---|---|---|
+| Supervised | `train_yl_supervised.py` | Data loss |
+| Physics-constrained supervised | `train_yl_constrained.py` | Data loss + boundary and volume penalties |
+
+### Objective
+
+$$
+\mathcal{L}_{\mathrm{total}} = \mathcal{L}_{\mathrm{data}} + \lambda_{\mathrm{BC}}\mathcal{L}_{\mathrm{BC}} + \lambda_V\mathcal{L}_V.
+$$
+
+For each training Bond number, the boundary residual is
+
+$$
+\mathbf{c} = \left(r(0)-1,\ z(0),\ r(1)-1,\ z(1)-2\right),
+$$
+
+where the arguments denote the computational coordinate $t\in[0,1]$.
+
+The constraint losses are
+
+$$
+\mathcal{L}_{\mathrm{BC}} = \frac{1}{2N_B}\sum_{b=1}^{N_B}\|\mathbf{c}_b\|_2^2,
+$$
+
+$$
+\mathcal{L}_V = \frac{1}{2N_B}\sum_{b=1}^{N_B}(V_b-2\pi)^2.
+$$
+
+Volume is evaluated using the same quadratic-element interpolation and three-point Gauss quadrature as the Fortran implementation. This computation is differentiable in PyTorch.
+
+Both penalty weights default to **1.0**.
+
+### Run
+
+Build the Fortran solver and run constrained training:
+
+```bash
+make
+python train_yl_constrained.py \
+    --lambda-bc 1.0 \
+    --lambda-volume 1.0 \
+    --output yl_constrained
+```
+
+Use a new or empty output directory for each run.
+
+List all available settings:
+
+```bash
+python train_yl_constrained.py --help
+```
+
+Training uses Adam followed by scaled L-BFGS refinement. The best recorded model is selected using the total objective.
+
+For this script, `--tol` specifies the unscaled total-loss target.
+
+### Evaluation
+
+In addition to prediction errors against Newton solutions, the script reports boundary and volume errors for both the neural predictions and the numerical references.
+
+The output includes:
+
+- `history.csv` and `history.png`: total loss and individual loss components
+- `train_metrics.csv` and `test_metrics.csv`: prediction and constraint errors
+- `test_max_errors.json`: maximum selected test errors
+- `test_error_vs_bond.png`: relative solution-vector error across test cases
+- Per-case solution comparisons and Tecplot files
+- `config.json` and `model.pt`: configuration and selected model
+
+### Interpretation
+
+The boundary and volume constraints are soft training penalties. They are evaluated only at training Bond numbers and are not enforced exactly at inference.
+
+No Young–Laplace PDE residual is included in the objective, and no correction or projection is applied to predictions after inference.
+
+Newton reference solutions are generated before training. The optimization loop runs entirely in PyTorch.
+
+To compare the two methods, use matching training/test Bond numbers, mesh resolution, network architecture, and optimization settings. Report prediction errors together with boundary and volume errors on held-out cases.
