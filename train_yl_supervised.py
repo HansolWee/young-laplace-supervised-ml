@@ -487,7 +487,7 @@ def main():
     parser.add_argument(
         "--tol",
         type=float,
-        default=1e-10,
+        default=1e-6,
         help=(
             "Unscaled supervised loss target; "
             "NOT a residual tolerance"
